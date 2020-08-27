@@ -36,7 +36,7 @@ bot.on('message', msg => {
             case 'list':
                 if (args.length >= 1) {
                     let uniqueArgs = [];
-                    for (a = 1; a < args.length; a++) {
+                    for (a = 0; a < args.length; a++) {
                         if (!uniqueArgs.includes(args[a])) {
                             console.log("Unique arg " + args[a]);
                             uniqueArgs.push(args[a]);
@@ -55,7 +55,7 @@ bot.on('message', msg => {
                 if (args[0].toLowerCase() == "list") {
                     if (args.length >= 2) {
                         let uniqueArgs = [];
-                        for (a = 2; a < args.length; a++) {
+                        for (a = 1; a < args.length; a++) {
                             if (!uniqueArgs.includes(args[a])) {
                                 console.log("Unique arg " + args[a]);
                                 uniqueArgs.push(args[a]);
