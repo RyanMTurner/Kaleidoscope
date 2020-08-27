@@ -34,26 +34,38 @@ bot.on('message', msg => {
                     content: "Pong!"
                 });
                 break;
+            case 'list':
+                listEnums(msg);
+                break;
             case 'ce':
-                skillsToLookUp = [];
-                skillToCEs = {};
-                loadsDone = 0;
-                for (i = 0; i < args.length; i++) {
-                    if (!skillsToLookUp.includes(args[i])) {
-                        console.log("Unique arg " + args[i]);
-                        skillsToLookUp.push(args[i]);
-                        skillToCEs[args[i]] = [];
-                    }
+                if (args[0].toLowerCase() == "list") {
+                    listEnums(msg);
                 }
-                effectCount = skillsToLookUp.length;
-                for (i = 0; i < effectCount; i++) {
-                    getCEsWithEffect(msg, skillsToLookUp[i]);
+                else if (args[0].toLowerCase() == "help") {
+
+                }
+                else {
+                    skillsToLookUp = [];
+                    skillToCEs = {};
+                    loadsDone = 0;
+                    for (i = 0; i < args.length; i++) {
+                        if (!skillsToLookUp.includes(args[i])) {
+                            console.log("Unique arg " + args[i]);
+                            skillsToLookUp.push(args[i]);
+                            skillToCEs[args[i]] = [];
+                        }
+                    }
+                    effectCount = skillsToLookUp.length;
+                    for (i = 0; i < effectCount; i++) {
+                        getCEsWithEffect(msg, skillsToLookUp[i]);
+                    }
                 }
                 break;
         }
     }
 });
 
+var buffsEnum = ["none", "upCommandatk", "upStarweight", "upCriticalpoint", "downCriticalpoint", "regainNp", "regainStar", "regainHp", "reduceHp", "upAtk", "downAtk", "upDamage", "downDamage", "addDamage", "subDamage", "upNpdamage", "downNpdamage", "upDropnp", "upCriticaldamage", "downCriticaldamage", "upSelfdamage", "downSelfdamage", "addSelfdamage", "subSelfdamage", "avoidance", "breakAvoidance", "invincible", "upGrantstate", "downGrantstate", "upTolerance", "downTolerance", "avoidState", "donotAct", "donotSkill", "donotNoble", "donotRecovery", "disableGender", "guts", "upHate", "addIndividuality", "subIndividuality", "upDefence", "downDefence", "upCommandstar", "upCommandnp", "upCommandall", "downCommandall", "downStarweight", "reduceNp", "downDropnp", "upGainHp", "downGainHp", "downCommandatk", "downCommanstar", "downCommandnp", "upCriticalrate", "downCriticalrate", "pierceInvincible", "avoidInstantdeath", "upResistInstantdeath", "upNonresistInstantdeath", "delayFunction", "regainNpUsedNoble", "deadFunction", "upMaxhp", "downMaxhp", "addMaxhp", "subMaxhp", "battlestartFunction", "wavestartFunction", "selfturnendFunction", "upGivegainHp", "downGivegainHp", "commandattackFunction", "deadattackFunction", "upSpecialdefence", "downSpecialdefence", "upDamagedropnp", "downDamagedropnp", "entryFunction", "upChagetd", "reflectionFunction", "upGrantSubstate", "downGrantSubstate", "upToleranceSubstate", "downToleranceSubstate", "upGrantInstantdeath", "downGrantInstantdeath", "gutsRatio", "damageFunction", "upDefencecommandall", "downDefencecommandall", "overwriteBattleclass", "overwriteClassrelatioAtk", "overwriteClassrelatioDef", "upDamageIndividuality", "downDamageIndividuality", "upDamageIndividualityActiveonly", "downDamageIndividualityActiveonly", "upNpturnval", "downNpturnval", "multiattack", "upGiveNp", "downGiveNp", "upResistanceDelayNpturn", "downResistanceDelayNpturn", "pierceDefence", "upGutsHp", "downGutsHp", "upFuncgainNp", "downFuncgainNp", "upFuncHpReduce", "downFuncHpReduce", "upDefencecommanDamage", "downDefencecommanDamage", "npattackPrevBuff", "fixCommandcard", "donotGainnp", "fieldIndividuality", "donotActCommandtype", "upDamageEventPoint", "upDamageSpecial", "attackFunction", "commandcodeattackFunction", "donotNobleCondMismatch", "donotSelectCommandcard", "donotReplace", "shortenUserEquipSkill", "tdTypeChange", "overwriteClassRelation", "tdTypeChangeArts", "tdTypeChangeBuster", "tdTypeChangeQuick", "commandattackBeforeFunction", "gutsFunction", "upCriticalRateDamageTaken", "downCriticalRateDamageTaken", "upCriticalStarDamageTaken", "downCriticalStarDamageTaken", "skillRankUp", "avoidanceIndividuality", "changeCommandCardType", "specialInvincible"];
 var functionsNotBuffs = ["none", "addState", "subState", "damage", "damageNp", "gainStar", "gainHp", "gainNp", "lossNp", "shortenSkill", "extendSkill", "releaseState", "lossHp", "instantDeath", "damageNpPierce", "damageNpIndividual", "addStateShort", "gainHpPer", "damageNpStateIndividual", "hastenNpturn", "delayNpturn", "damageNpHpratioHigh", "damageNpHpratioLow", "cardReset", "replaceMember", "lossHpSafe", "damageNpCounter", "damageNpStateIndividualFix", "damageNpSafe", "callServant", "ptShuffle", "lossStar", "changeServant", "changeBg", "damageValue", "withdraw", "fixCommandcard", "shortenBuffturn", "extendBuffturn", "shortenBuffcount", "extendBuffcount", "changeBgm", "displayBuffstring", "resurrection", "gainNpBuffIndividualSum", "setSystemAliveFlag", "forceInstantDeath", "damageNpRare", "gainNpFromTargets", "gainHpFromTargets", "lossHpPer", "lossHpPerSafe", "shortenUserEquipSkill", "quickChangeBg", "shiftServant", "damageNpAndCheckIndividuality", "absorbNpturn", "overwriteDeadType", "forceAllBuffNoact", "breakGaugeUp", "breakGaugeDown", "expUp", "qpUp", "dropUp", "friendPointUp", "eventDropUp", "eventDropRateUp", "eventPointUp", "eventPointRateUp", "transformServant", "qpDropUp", "servantFriendshipUp", "userEquipExpUp", "classDropUp", "enemyEncountCopyRateUp", "enemyEncountRateUp", "enemyProbDown", "getRewardGift", "sendSupportFriendPoint", "movePosition", "revival", "damageNpIndividualSum", "damageValueSafe", "friendPointUpDuplicate"];
 var effectCount = 0;
 var skillsToLookUp = [];
@@ -240,4 +252,41 @@ function listContainsCEId(list, ce) {
         }
     }
     return false;
+}
+
+function listEnums(msg) {
+    let strings = [""];
+    let currentString = 0;
+    for (b = 0; b < buffsEnum.length; b++) {
+        if (strings[currentString].length + buffsEnum[b].length + 2 < 2048) {
+            strings[currentString] += buffsEnum[b] + ", ";
+        }
+        else {
+            currentString++;
+            strings[currentString] = buffsEnum[b] + ", ";
+        }
+    }
+    for (f = 0; f < functionsNotBuffs.length; f++) {
+        if (strings[currentString].length + functionsNotBuffs[f].length + 2 < 2048) {
+            strings[currentString] += functionsNotBuffs[f] + ", ";
+        }
+        else {
+            currentString++;
+            strings[currentString] = functionsNotBuffs[f] + ", ";
+        }
+    }
+    strings[currentString] = strings[currentString].substring(0, strings[currentString].length - 2);
+    msg.channel.send({
+        embed: {
+            title: "CE Options (TODO: Clean up)",
+            description: strings[0]
+        }
+    });
+    for (m = 1; m < strings.length; m++) {
+        msg.channel.send({
+            embed: {
+                description: strings[m]
+            }
+        });
+    }
 }
