@@ -1,6 +1,5 @@
 var Discord = require('discord.js');
 var logger = require('winston');
-var auth = require('./auth.json');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 // Configure logger settings
@@ -12,7 +11,7 @@ logger.level = 'debug';
 
 // Initialize Discord Bot
 var bot = new Discord.Client();
-bot.login(auth.token);
+bot.login(process.env.BOT_TOKEN);
 
 bot.on('ready', function (evt) {
     logger.info('Connected');
