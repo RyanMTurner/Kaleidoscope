@@ -34,16 +34,28 @@ bot.on('message', msg => {
                 });
                 break;
             case 'list':
-                listEnums(msg);
+                if (args.length >= 1) {
+                    let uniqueArgs = [];
+                    for (a = 1; a < args.length; a++) {
+                        if (!uniqueArgs.includes(args[a])) {
+                            console.log("Unique arg " + args[a]);
+                            uniqueArgs.push(args[a]);
+                        }
+                    }
+                    filterEnums(msg, uniqueArgs);
+                }
+                else {
+                    listEnums(msg);
+                }
                 break;
             case 'help':
                 showHelp(msg);
                 break;
             case 'ce':
                 if (args[0].toLowerCase() == "list") {
-                    if (args.length > 1) {
+                    if (args.length >= 2) {
                         let uniqueArgs = [];
-                        for (a = 1; a < args.length; a++) {
+                        for (a = 2; a < args.length; a++) {
                             if (!uniqueArgs.includes(args[a])) {
                                 console.log("Unique arg " + args[a]);
                                 uniqueArgs.push(args[a]);
