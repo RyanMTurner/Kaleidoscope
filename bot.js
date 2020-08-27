@@ -37,12 +37,15 @@ bot.on('message', msg => {
             case 'list':
                 listEnums(msg);
                 break;
+            case 'help':
+                showHelp(msg);
+                break;
             case 'ce':
                 if (args[0].toLowerCase() == "list") {
                     listEnums(msg);
                 }
                 else if (args[0].toLowerCase() == "help") {
-
+                    showHelp(msg);
                 }
                 else {
                     skillsToLookUp = [];
@@ -289,4 +292,13 @@ function listEnums(msg) {
             }
         });
     }
+}
+
+function showHelp(msg) {
+    msg.channel.send({
+        embed: {
+            title: "Using Kaleidoscope",
+            description: "`=ce [args]` //Get a list of all craft essences with that buff or function\n**example:** `=ce upDropnp gainNp` lists all CEs with NP Gain and Starting NP.\n\n`=list` //Get a list of the technical names of all buffs & functions (warning: it's long)"
+        }
+    });
 }
