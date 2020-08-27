@@ -41,7 +41,19 @@ bot.on('message', msg => {
                 break;
             case 'ce':
                 if (args[0].toLowerCase() == "list") {
-                    listEnums(msg);
+                    if (args.length > 1) {
+                        let uniqueArgs = [];
+                        for (a = 1; a < args.length; a++) {
+                            if (!uniqueArgs.includes(args[a])) {
+                                console.log("Unique arg " + args[a]);
+                                uniqueArgs.push(args[a]);
+                            }
+                        }
+                        filterEnums(msg, uniqueArgs);
+                    }
+                    else {
+                        listEnums(msg);
+                    }
                 }
                 else if (args[0].toLowerCase() == "help") {
                     showHelp(msg);
@@ -300,4 +312,62 @@ function showHelp(msg) {
             description: "`=ce [args]` //Get a list of all craft essences with that buff or function\n**example:** `=ce upDropnp gainNp` lists all CEs with NP Gain and Starting NP.\n\n`=list` //Get a list of the technical names of all buffs & functions (warning: it's long)"
         }
     });
+}
+
+function filterEnums(msg, args) {
+    let tittle = "CE Options Containing: ";
+    for (t = 0; t < args.length; t++) {
+        if (t > 0) {
+            tittle += " OR ";
+        }
+        tittle += args[t];
+    }
+
+    let strings = [""];
+    let currentString = 0;
+    for (b = 0; b < buffsEnum.length; b++) {
+        if (containsToLower(args, buffsEnum[b])) {
+            if (strings[currentString].length + buffsEnum[b].length + 2 < 2048) {
+                strings[currentString] += buffsEnum[b] + ", ";
+            }
+            else {
+                currentString++;
+                strings[currentString] = buffsEnum[b] + ", ";
+            }
+        }
+    }
+    for (f = 0; f < functionsNotBuffs.length; f++) {
+        if (containsToLower(args, functionsNotBuffs[f])) {
+            if (strings[currentString].length + functionsNotBuffs[f].length + 2 < 2048) {
+                strings[currentString] += functionsNotBuffs[f] + ", ";
+            }
+            else {
+                currentString++;
+                strings[currentString] = functionsNotBuffs[f] + ", ";
+            }
+        }
+    }
+    strings[currentString] = strings[currentString].substring(0, strings[currentString].length - 2);
+    msg.channel.send({
+        embed: {
+            title: tittle,
+            description: strings[0]
+        }
+    });
+    for (m = 1; m < strings.length; m++) {
+        msg.channel.send({
+            embed: {
+                description: strings[m]
+            }
+        });
+    }
+}
+
+function containsToLower(list, string) {
+    for (l = 0; l < list.length; l++) {
+        if (list[l].toLowerCase() == string.toLowerCase()) {
+            return true;
+        }
+    }
+    return false;
 }
