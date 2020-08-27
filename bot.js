@@ -377,6 +377,7 @@ function filterEnums(msg, args) {
 
 function containsToLower(list, string) {
     for (l = 0; l < list.length; l++) {
+        console.log("Testing if " + list[l] + " contains " + string);
         if (list[l].toLowerCase().includes(string.toLowerCase())) {
             return true;
         }
