@@ -4,6 +4,9 @@
   "description": "Fate Grand Order Craft Essence Search",
   "main": "bot.js",
   "author": "Ryan Turner",
+  "scripts": {
+    "start": "node bot.js"
+  },
   "dependencies": {
     "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
     "discord.js": "^12.3.1",
