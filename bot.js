@@ -38,7 +38,7 @@ bot.on('message', msg => {
                     let uniqueArgs = [];
                     for (a = 0; a < args.length; a++) {
                         if (!uniqueArgs.includes(args[a])) {
-                            console.log("Unique arg " + args[a]);
+                            //console.log("Unique arg " + args[a]);
                             uniqueArgs.push(args[a]);
                         }
                     }
@@ -57,7 +57,7 @@ bot.on('message', msg => {
                         let uniqueArgs = [];
                         for (a = 1; a < args.length; a++) {
                             if (!uniqueArgs.includes(args[a])) {
-                                console.log("Unique arg " + args[a]);
+                                //console.log("Unique arg " + args[a]);
                                 uniqueArgs.push(args[a]);
                             }
                         }
@@ -76,7 +76,7 @@ bot.on('message', msg => {
                     loadsDone = 0;
                     for (i = 0; i < args.length; i++) {
                         if (!skillsToLookUp.includes(args[i])) {
-                            console.log("Unique arg " + args[i]);
+                            //console.log("Unique arg " + args[i]);
                             skillsToLookUp.push(args[i]);
                             skillToCEs[args[i]] = [];
                         }
@@ -168,7 +168,7 @@ function addCEsFromFunctionList(funcs, effect) {
                                                 if (funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant].hasOwnProperty("type")) {
                                                     if (funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant].type == "servantEquip") {
                                                         if (!listContainsCEId(skillToCEs[effect], funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant])) {
-                                                            console.log("Adding CE Id: " + funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant].collectionNo + " to effect: " + effect);
+                                                            //console.log("Adding CE Id: " + funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant].collectionNo + " to effect: " + effect);
                                                             skillToCEs[effect].push(funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant]);
                                                         }
                                                     }
@@ -230,7 +230,7 @@ function checkCEs(chatMsg) {
         if (skillToCEs[skillsToLookUp[0]][j].collectionNo == 0) {
             continue;
         }
-        console.log("Checking CE Id: " + skillToCEs[skillsToLookUp[0]][j].collectionNo + " (" + (j + 1) + " of " + skillToCEs[skillsToLookUp[0]].length + ")");
+        //console.log("Checking CE Id: " + skillToCEs[skillsToLookUp[0]][j].collectionNo + " (" + (j + 1) + " of " + skillToCEs[skillsToLookUp[0]].length + ")");
         let addCE = true;
         for (list = 1; list < effectCount; list++) {
             if (!listContainsCEId(skillToCEs[skillsToLookUp[list]], skillToCEs[skillsToLookUp[0]][j])) {
@@ -239,11 +239,11 @@ function checkCEs(chatMsg) {
             }
         }
         if (addCE) {
-            console.log("Adding!");
+            //console.log("Adding!");
             ids.push(skillToCEs[skillsToLookUp[0]][j].collectionNo);
         }
         else {
-            console.log("Skipping!");
+            //console.log("Skipping!");
         }
     }
     ids.sort((a, b) => a - b);
@@ -377,8 +377,8 @@ function filterEnums(msg, args) {
 
 function containsToLower(list, string) {
     for (l = 0; l < list.length; l++) {
-        console.log("Testing if " + list[l] + " contains " + string);
-        if (list[l].toLowerCase().includes(string.toLowerCase())) {
+        //console.log("Testing if " + list[l] + " contains " + string);
+        if (string.toLowerCase().includes(list[l].toLowerCase())) {
             return true;
         }
     }
