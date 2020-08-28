@@ -60,7 +60,7 @@ bot.on('message', msg => {
                 showHelp(msg);
                 break;
             case 'ce':
-                if (args[0].toLowerCase() == "help" || args.length == 0) {
+                if (args.length == 0 || args[0].toLowerCase() == "help") {
                     showHelp(msg);
                 }
                 else if (args[0].toLowerCase() == "listraw") {
