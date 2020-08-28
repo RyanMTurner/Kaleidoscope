@@ -60,7 +60,10 @@ bot.on('message', msg => {
                 showHelp(msg);
                 break;
             case 'ce':
-                if (args[0].toLowerCase() == "listRaw") {
+                if (args[0].toLowerCase() == "help" || args.length == 0) {
+                    showHelp(msg);
+                }
+                else if (args[0].toLowerCase() == "listRaw") {
                     if (args.length >= 2) {
                         let uniqueArgs = [];
                         for (a = 1; a < args.length; a++) {
@@ -82,9 +85,6 @@ bot.on('message', msg => {
                     else {
                         listEnums(msg, false);
                     }
-                }
-                else if (args[0].toLowerCase() == "help" || args.length == 0) {
-                    showHelp(msg);
                 }
                 else {
                     skillsToLookUp = [];
