@@ -141,6 +141,11 @@ function getCEsWithEffect(msg, effect) {
                 addCEsFromFunctionList(obj, effect);
             }
         }
+        else if (request.status == 422) {
+            msg.channel.send({
+                content: "Unknown arg: " + effect
+            });
+        }
         else {
             console.log(`error ${request.status} ${request.statusText}`);
         }
@@ -247,21 +252,28 @@ function checkCEs(chatMsg) {
         }
     }
     ids.sort((a, b) => a - b);
-    let msgLong = (' ' + msg).slice(1);
-    for (k = 0; k < ids.length; k++) {
-        msg += ids[k] + ", ";
-        msgLong += "[" + ids[k] + "](https://apps.atlasacademy.io/db/#/JP/craft-essence/" + ids[k] + "), ";
-    }
-    if (msgLong.length <= 2000) {
-        msg = msgLong;
-    }
-    msg = msg.substring(0, msg.length - 2);
-    chatMsg.channel.send({
-        embed: {
-            title: msgTitle,
-            description: msg
+    if (ids.length > 0) {
+        let msgLong = (' ' + msg).slice(1);
+        for (k = 0; k < ids.length; k++) {
+            msg += ids[k] + ", ";
+            msgLong += "[" + ids[k] + "](https://apps.atlasacademy.io/db/#/JP/craft-essence/" + ids[k] + "), ";
         }
-    });
+        if (msgLong.length <= 2000) {
+            msg = msgLong;
+        }
+        msg = msg.substring(0, msg.length - 2);
+        chatMsg.channel.send({
+            embed: {
+                title: msgTitle,
+                description: msg
+            }
+        });
+    }
+    else {
+        msg.channel.send({
+            content: "Found no " + msgTitle
+        });
+    }
 }
 
 function checkIdsEqual(ce1, ce2) {
