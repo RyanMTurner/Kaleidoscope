@@ -35,7 +35,7 @@ bot.on('message', msg => {
                 break;
             case 'list':
                 if (args.length >= 1) {
-                    filterEnums(msg, args[0].toLowerCase() == "a" || args[0].toLowerCase() == "all" || args[0].toLowerCase() == "v" || args[0].toLowerCase() == "verbose" || args[0].toLowerCase() == "u" || args[0].toLowerCase() == "unused");
+                    listEnums(msg, args[0].toLowerCase() == "a" || args[0].toLowerCase() == "all" || args[0].toLowerCase() == "v" || args[0].toLowerCase() == "verbose" || args[0].toLowerCase() == "u" || args[0].toLowerCase() == "unused");
                 }
                 else {
                     listEnums(msg, false);
@@ -73,6 +73,14 @@ bot.on('message', msg => {
                     }
                     else {
                         listEnumsDirty(msg);
+                    }
+                }
+                else if (args[0].toLowerCase() == "list") {
+                    if (args.length >= 2) {
+                        listEnums(msg, args[1].toLowerCase() == "a" || args[1].toLowerCase() == "all" || args[1].toLowerCase() == "v" || args[1].toLowerCase() == "verbose" || args[1].toLowerCase() == "u" || args[1].toLowerCase() == "unused");
+                    }
+                    else {
+                        listEnums(msg, false);
                     }
                 }
                 else if (args[0].toLowerCase() == "help") {
