@@ -35,6 +35,14 @@ bot.on('message', msg => {
                 break;
             case 'list':
                 if (args.length >= 1) {
+                    filterEnums(msg, args[0].toLowerCase() == "a" || args[0].toLowerCase() == "all" || args[0].toLowerCase() == "v" || args[0].toLowerCase() == "verbose" || args[0].toLowerCase() == "u" || args[0].toLowerCase() == "unused");
+                }
+                else {
+                    listEnums(msg, false);
+                }
+                break;
+            case 'listRaw':
+                if (args.length >= 1) {
                     let uniqueArgs = [];
                     for (a = 0; a < args.length; a++) {
                         if (!uniqueArgs.includes(args[a])) {
@@ -45,14 +53,14 @@ bot.on('message', msg => {
                     filterEnums(msg, uniqueArgs);
                 }
                 else {
-                    listEnums(msg);
+                    listEnumsDirty(msg);
                 }
                 break;
             case 'help':
                 showHelp(msg);
                 break;
             case 'ce':
-                if (args[0].toLowerCase() == "list") {
+                if (args[0].toLowerCase() == "listRaw") {
                     if (args.length >= 2) {
                         let uniqueArgs = [];
                         for (a = 1; a < args.length; a++) {
@@ -64,7 +72,7 @@ bot.on('message', msg => {
                         filterEnums(msg, uniqueArgs);
                     }
                     else {
-                        listEnums(msg);
+                        listEnumsDirty(msg);
                     }
                 }
                 else if (args[0].toLowerCase() == "help") {
@@ -97,6 +105,10 @@ var effectCount = 0;
 var skillsToLookUp = [];
 var skillToCEs = {};
 var loadsDone = 0;
+
+var explain1 = "**Command Cards:** [up/down]Commandall (Arts/Buster/Quick, disambiguation coming soon:tm:)\n**ATK & DEF:** [up/down]Atk (Attack), [up/down]Defence (Defen__s__e), [add/sub]Damage (Divinity), [add/sub]Selfdamage (Damage Cut), pierceDefence (<-), [up/down]DamageIndividualityActiveonly (Damage VS Statused)\n**HP:** [regain/reduce]Hp (Per Turn), [up/down]GainHp (Heal Received), [add/sun]Maxhp (Max HP), [up/down]GivegainHp (Heal Dealt)\n**NP:** gainNp (Starting NP), [up/down]Dropnp (NP Gen), [up/down]Damagedropnp (NP Gen when Attacked), [up/down]Npdamage (NP Damage), [regain/reduce]Np (Per Turn), upChagetd (Overcharge)\n**Critical:** [up/down]Criticaldamage (Crit Damage), [up/down]Criticalpoint (Star Gen), [up/down]Starweight (Weight), regainStar (Per Turn), [up/down]CriticalRateDamageTaken (Chance of Taking Critical Hit)\n**Lifelines:** avoidance (Evade), breakAvoidance (Sure Hit), invincible (<-), pierceInvincible (<-), guts (Revive with X HP), gutsRatio (Revive with %), upHate (Taunt)";
+var explain2 = "**Buffs:** [up/down]Tolerance (Debuff Resist), avoidState (Debuff Immunity), [up/down]Grantstate (Debuff Success), [up/down]ToleranceSubstate (Clear Buff Resist), [upResist/upNonresist]Instantdeath (Instant Kill Resist), avoidInstantdeath (Instant Kill Immunity), [up/down]GrantInstantdeath (Instant Kill Success), deadFunction (Trigger On Death), commandattackFunction (Trigger On Card Use), entryFunction (Trigger On Enter Battle), overwriteClassRelation (Class Interaction), [add/sub]State (AFAIK any Buff?)\n**Rewards:** expUp (Master XP), userEquipExpUp (Clothes XP), qpUp (+X QP), qpDropUp (+% QP), friendPointUp (FP from Taking), friendPointUpDuplicate (+X FP), servantFriendshipUp (Bond)\n**Events:** none (CE XP & Valentine's), [up/down]Damage (Event Damage), eventDropUp (Event Currencies), eventDropRateUp (Chance of Dropping Event Currency), eventPointUp (<-), [up/down]Commandatk (Prisma Event), upDamageEventPoint (Oniland Event), classDropUp (Valentine's & Fate/Zero), enemyEncountCopyRateUp (Chance to Clone Enemy), enemyEncountRateUp (Chance to Make Enemy Appear)";
+var explain3 = "**Unused:** [up/down]Selfdamage, donotAct, donotSkill, donotNoble, donotRecovery, disableGender, [add/sub]Individuality, [up/down]Comman[d]star, [up/down]Commandnp, [up/down]Criticalrate, delayFunction, regainNpUsedNoble, [up/down]Maxhp, battlestartFunction, wavestartFunction, selfturnendFunction, deadattackFunction, [up/down]Specialdefence, reflectionFunction, [up/down]GrantSubstate, damageFunction, [up/down]Defencecommandall, overwriteBattleclass, overwriteClassrelatio[Atk/Def], [up/down]DamageIndividuality, [up/down]Npturnval, multiattack, [up/down]GiveNp, [up/down]ResistanceDelayNpturn, [up/down]GutsHp, [up/down]FuncgainNp, [up/down]FuncHpReduce, [up/down]DefencecommanDamage, npattackPrevBuff, fixCommandcard, donotGainnp, fieldIndividuality, donotActCommandtype, upDamageSpecial, attackFunction, commandcodeattackFunction, donotNobleCondMismatch, donotSelectCommandcard, donotReplace, shortenUserEquipSkill, tdTypeChange[Arts/Buster/Quick], commandattackBeforeFunction, gutsFunction, [up/down]CriticalStarDamageTaken, skillRankUp, avoidanceIndividuality, changeCommandCardType, specialInvincible, damage, damageNp, [gain/loss]Star, [gain/loss]Hp, lossNp, [shorten/extend]Skill, releaseState, instantDeath, damageNpPierce, damageNpIndividual, ~~addStateShort~~ (don't call this), gainHpPer, damageNpStateIndividual, [hasten/delay]Npturn, damageNpHpratio[High/Low], cardReset, replaceMember, lossHpSafe, damageNpCounter, damageNpStateIndividualFix, damageNpSafe, callServant, ptShuffle, changeServant, changeBg, damageValue, withdraw, fixCommandcard, [shorten/extend]Buffturn, [shorten/extend]Buffcount, changeBgm, displayBuffstring, resurrection, gainNpBuffIndividualSum, setSystemAliveFlag, forceInstantDeath, damageNpRare, gainNpFromTargets, gainHpFromTargets, lossHpPer, lossHpPerSafe, shortenUserEquipSkill, quickChangeBg, shiftServant, damageNpAndCheckIndividuality, absorbNpturn, overwriteDeadType, forceAllBuffNoact, breakGauge[Up/Down], dropUp, eventPointRateUp, transformServant, enemyProbDown, getRewardGift, sendSupportFriendPoint, movePosition, damageNpIndividualSum, damageValueSafe";
 
 function getCEsWithEffect(msg, effect) {
     let request = new XMLHttpRequest();
@@ -292,7 +304,7 @@ function listContainsCEId(list, ce) {
     return false;
 }
 
-function listEnums(msg) {
+function listEnumsDirty(msg) {
     let strings = [""];
     let currentString = 0;
     for (b = 0; b < buffsEnum.length; b++) {
@@ -316,7 +328,7 @@ function listEnums(msg) {
     strings[currentString] = strings[currentString].substring(0, strings[currentString].length - 2);
     msg.channel.send({
         embed: {
-            title: "CE Options (TODO: Clean up)",
+            title: "Raw Argument List:",
             description: strings[0]
         }
     });
@@ -329,11 +341,33 @@ function listEnums(msg) {
     }
 }
 
+function listEnums(msg, unused) {
+    msg.channel.send({
+        embed: {
+            title: "Argument List:",
+            description: explain1
+        }
+    });
+    msg.channel.send({
+        embed: {
+            description: explain2
+        }
+    });
+    if (unused) {
+        msg.channel.send({
+            embed: {
+                title: "Valid Arguments, But Unused In-Game:",
+                description: explain3
+            }
+        });
+    }
+}
+
 function showHelp(msg) {
     msg.channel.send({
         embed: {
             title: "Using Kaleidoscope",
-            description: "`=ce [args]` //Get a list of all craft essences with that buff or function\n**example:** `=ce upDropnp gainNp` lists all CEs with NP Gain and Starting NP.\n\n`=list [args]` //Get a list of the technical names of all buffs & functions. It's long, I recommend filtering:\n**example:** `=list np` lists arguments that contain 'np'."
+            description: "`=ce [args]` //Get a list of all craft essences with that buff or function\n**example:** `=ce upDropnp gainNp` lists all CEs with NP Gain and Starting NP.\n\n`=list [a/all/u/unused/v/verbose]` //Get a formatted list of the technical names of all buffs & functions.\n`=list` omits any functions that don't appear on any CEs, use one of the bracketed arguments to see those as well.\n`=listRaw [args]` //Get a list of the technical names of all buffs & functions. It's long without any arguments, I recommend filtering:\n**example:** `=list np` lists arguments that contain 'np'."
         }
     });
 }
