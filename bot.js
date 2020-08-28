@@ -27,7 +27,7 @@ bot.on('message', msg => {
         var cmd = args[0];
 
         args = args.splice(1);
-        switch (cmd) {
+        switch (cmd.toLowerCase()) {
             case 'ping':
                 msg.channel.send({
                     content: "Pong!"
@@ -41,7 +41,7 @@ bot.on('message', msg => {
                     listEnums(msg, false);
                 }
                 break;
-            case 'listRaw':
+            case 'listraw':
                 if (args.length >= 1) {
                     let uniqueArgs = [];
                     for (a = 0; a < args.length; a++) {
@@ -63,7 +63,7 @@ bot.on('message', msg => {
                 if (args[0].toLowerCase() == "help" || args.length == 0) {
                     showHelp(msg);
                 }
-                else if (args[0].toLowerCase() == "listRaw") {
+                else if (args[0].toLowerCase() == "listraw") {
                     if (args.length >= 2) {
                         let uniqueArgs = [];
                         for (a = 1; a < args.length; a++) {
