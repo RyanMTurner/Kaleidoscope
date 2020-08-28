@@ -367,7 +367,7 @@ function showHelp(msg) {
     msg.channel.send({
         embed: {
             title: "Using Kaleidoscope",
-            description: "`=ce [args]` //Get a list of all craft essences with that buff or function\n**example:** `=ce upDropnp gainNp` lists all CEs with NP Gain and Starting NP.\n\n`=list [a/all/u/unused/v/verbose]` //Get a formatted list of the technical names of all buffs & functions.\n`=list` omits any functions that don't appear on any CEs, use one of the bracketed arguments to see those as well.\n`=listRaw [args]` //Get a list of the technical names of all buffs & functions. It's long without any arguments, I recommend filtering:\n**example:** `=list np` lists arguments that contain 'np'."
+            description: "`=ce [args]` //Get a list of all craft essences with that buff or function\n**example:** `=ce upDropnp gainNp` lists all CEs with NP Gain and Starting NP.\n\n`=list [a/all/u/unused/v/verbose]` //Get a formatted list of the technical names of all buffs & functions.\nBy default, `=list` omits any functions that don't appear on any CEs; use one of the bracketed arguments to see those as well.\n`=listRaw [args]` //Get a list of the technical names of all buffs & functions. It's long without any arguments, I recommend filtering:\n**example:** `=list np` lists arguments that contain 'np'."
         }
     });
 }
