@@ -83,7 +83,7 @@ bot.on('message', msg => {
                         listEnums(msg, false);
                     }
                 }
-                else if (args[0].toLowerCase() == "help") {
+                else if (args[0].toLowerCase() == "help" || args.length == 0) {
                     showHelp(msg);
                 }
                 else {
