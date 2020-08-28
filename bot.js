@@ -35,10 +35,10 @@ bot.on('message', msg => {
                 break;
             case 'list':
                 if (args.length >= 1) {
-                    listEnums(msg, args[0].toLowerCase() == "a" || args[0].toLowerCase() == "all" || args[0].toLowerCase() == "v" || args[0].toLowerCase() == "verbose" || args[0].toLowerCase() == "u" || args[0].toLowerCase() == "unused");
+                    listEnums(msg, args[0]);
                 }
                 else {
-                    listEnums(msg, false);
+                    listEnums(msg, 0);
                 }
                 break;
             case 'listraw':
@@ -80,10 +80,10 @@ bot.on('message', msg => {
                 }
                 else if (args[0].toLowerCase() == "list") {
                     if (args.length >= 2) {
-                        listEnums(msg, args[1].toLowerCase() == "a" || args[1].toLowerCase() == "all" || args[1].toLowerCase() == "v" || args[1].toLowerCase() == "verbose" || args[1].toLowerCase() == "u" || args[1].toLowerCase() == "unused");
+                        listEnums(msg, args[1]);
                     }
                     else {
-                        listEnums(msg, false);
+                        listEnums(msg, 0);
                     }
                 }
                 else {
@@ -113,11 +113,6 @@ var effectCount = 0;
 var skillsToLookUp = [];
 var skillToCEs = {};
 var loadsDone = 0;
-
-var explain1 = "**Command Cards:** [up/down]Commandall (Arts/Buster/Quick, disambiguation coming soon:tm:)\n**ATK & DEF:** [up/down]Atk (Attack), [up/down]Defence (Defen__s__e), [add/sub]Damage (Divinity), [add/sub]Selfdamage (Damage Cut), pierceDefence (<-), [up/down]DamageIndividualityActiveonly (Damage VS Statused)\n**HP:** [regain/reduce]Hp (Per Turn), [up/down]GainHp (Heal Received), [add/sun]Maxhp (Max HP), [up/down]GivegainHp (Heal Dealt)\n**NP:** gainNp (Starting NP), [up/down]Dropnp (NP Gen), [up/down]Damagedropnp (NP Gen when Attacked), [up/down]Npdamage (NP Damage), [regain/reduce]Np (Per Turn), upChagetd (Overcharge)\n**Critical:** [up/down]Criticaldamage (Crit Damage), [up/down]Criticalpoint (Star Gen), [up/down]Starweight (Weight), regainStar (Per Turn), [up/down]CriticalRateDamageTaken (Chance of Taking Critical Hit)\n**Lifelines:** avoidance (Evade), breakAvoidance (Sure Hit), invincible (<-), pierceInvincible (<-), guts (Revive with X HP), gutsRatio (Revive with %), upHate (Taunt)";
-var explain2 = "**Buffs:** [up/down]Tolerance (Debuff Resist), avoidState (Debuff Immunity), [up/down]Grantstate (Debuff Success), [up/down]ToleranceSubstate (Clear Buff Resist), [upResist/upNonresist]Instantdeath (Instant Kill Resist), avoidInstantdeath (Instant Kill Immunity), [up/down]GrantInstantdeath (Instant Kill Success), deadFunction (Trigger On Death), commandattackFunction (Trigger On Card Use), entryFunction (Trigger On Enter Battle), overwriteClassRelation (Class Interaction), [add/sub]State (AFAIK any Buff?)\n**Rewards:** expUp (Master XP), userEquipExpUp (Clothes XP), qpUp (+X QP), qpDropUp (+% QP), friendPointUp (FP from Taking), friendPointUpDuplicate (+X FP), servantFriendshipUp (Bond)\n**Events:** none (CE XP & Valentine's), [up/down]Damage (Event Damage), eventDropUp (Event Currencies), eventDropRateUp (Chance of Dropping Event Currency), eventPointUp (<-), [up/down]Commandatk (Prisma Event), upDamageEventPoint (Oniland Event), classDropUp (Valentine's & Fate/Zero), enemyEncountCopyRateUp (Chance to Clone Enemy), enemyEncountRateUp (Chance to Make Enemy Appear)";
-var unused1 = "[up/down]Selfdamage, donotAct, donotSkill, donotNoble, donotRecovery, disableGender, [add/sub]Individuality, [up/down]Comman[d]star, [up/down]Commandnp, [up/down]Criticalrate, delayFunction, regainNpUsedNoble, [up/down]Maxhp, battlestartFunction, wavestartFunction, selfturnendFunction, deadattackFunction, [up/down]Specialdefence, reflectionFunction, [up/down]GrantSubstate, damageFunction, [up/down]Defencecommandall, overwriteBattleclass, overwriteClassrelatio[Atk/Def], [up/down]DamageIndividuality, [up/down]Npturnval, multiattack, [up/down]GiveNp, [up/down]ResistanceDelayNpturn, [up/down]GutsHp, [up/down]FuncgainNp, [up/down]FuncHpReduce, [up/down]DefencecommanDamage, npattackPrevBuff, fixCommandcard, donotGainnp, fieldIndividuality, donotActCommandtype, upDamageSpecial, attackFunction, commandcodeattackFunction, donotNobleCondMismatch, donotSelectCommandcard, donotReplace, shortenUserEquipSkill, tdTypeChange[Arts/Buster/Quick], commandattackBeforeFunction, gutsFunction, [up/down]CriticalStarDamageTaken, skillRankUp, avoidanceIndividuality, changeCommandCardType, specialInvincible, damage, damageNp, [gain/loss]Star, [gain/loss]Hp, lossNp, [shorten/extend]Skill, releaseState, instantDeath, damageNpPierce, damageNpIndividual, ~~addStateShort~~ (don't call this), gainHpPer, damageNpStateIndividual, [hasten/delay]Npturn, damageNpHpratio[High/Low], cardReset, replaceMember, lossHpSafe, damageNpCounter, damageNpStateIndividualFix, damageNpSafe, callServant, ptShuffle, changeServant, changeBg, damageValue, withdraw, fixCommandcard, [shorten/extend]Buffturn, [shorten/extend]Buffcount, changeBgm, displayBuffstring, resurrection, gainNpBuffIndividualSum, setSystemAliveFlag, forceInstantDeath, damageNpRare, gainNpFromTargets, gainHpFromTargets, lossHpPer, lossHpPerSafe, shortenUserEquipSkill, quickChangeBg, shiftServant, damageNpAndCheckIndividuality, absorbNpturn, overwriteDeadType, forceAllBuffNoact, breakGauge[Up/Down], dropUp, eventPointRateUp, transformServant, enemyProbDown,";
-var unused2 = "getRewardGift, sendSupportFriendPoint, movePosition, damageNpIndividualSum, damageValueSafe";
 
 function getCEsWithEffect(msg, effect) {
     let request = new XMLHttpRequest();
@@ -350,28 +345,49 @@ function listEnumsDirty(msg) {
     }
 }
 
-function listEnums(msg, unused) {
-    msg.channel.send({
-        embed: {
-            title: "Argument List:",
-            description: explain1
-        }
-    });
-    msg.channel.send({
-        embed: {
-            description: explain2
-        }
-    });
-    if (unused) {
+function listEnums(msg, page) {
+    let page1 = "**Command Cards:**\n:_artsCard::_busterCard::_quickCard: __Arts/Buster/Quick__ (disambiguation coming soon:tm:) - upCommandall, downCommandall\n**ATK & DEF:**\n:_charisma::_atkDown: __Attack__ - upAtk, downAtk\n:_divinity: __Divinity__ - addDamage, subDamage\n:_defUp::_defDown: __Defense__ - upDefence, downDefence; __Damage Cut__ - addSelfdamage, subSelfdamage\n:_ignoreDefense: __Ignore Defense__ - pierceDefence\n:_powermod: __Damage VS Statused__ - upDamageIndividualityActiveonly, downDamageIndividualityActiveonly\n**HP:**\n:_HoT: __Per Turn__ - regainHp, reduceHp\n:_healPower: __Healing Received__ - upGainHp, downGainHp; __Healing Given__ upGivegainHp, downGivegainHp\n:_HPUp: __Max HP__ - addMaxhp, subMaxhp\n**NP:** \n:_npCharge: __Starting NP__ - gainNp, lossNp\n:_npgenUp: __NP Gen__ - upDropnp, downDropnp\n:_attackednpgenUp: __NP Gen when Attacked__ - upDamagedropnp, downDamagedropnp\n:_npmod::_npmodDown: __NP Damage__ - upNpdamage, downNpdamage\n:_npchargePerTurn: __Per Turn__ - regainNp, reduceNp\n:_overcharge: __Overcharge__ - upChagetd\n**Critical:**\n:_critUp::_critDown: __Crit Damage__ - upCriticaldamage, downCriticaldamage\n:_starGen: __Star Gen__ - upCriticalpoint, downCriticalpoint\n:_gatherUp::_gatherDown: __Weight__ - upStarweight, downStarweight\n:_starsPerTurn: __Per Turn__ - regainStar\n:_critChanceResUp: __Chance of Taking Critical Hit__ - upCriticalRateDamageTaken, downCriticalRateDamageTaken";
+    let page2 = "**Lifelines:**\n:_evade: __Evade__ - avoidance\n:_sureHit: __Sure Hit__ - breakAvoidance\n:_invul: __Invincible__ - invincible\n:_invulPierce: __Pierce Invincible__ - pierceInvincible\n:_guts: __Revive with X HP__ - guts, __Revive with %__ - gutsRatio\n:_taunt: __Taunt__ - upHate\n**Buffs:**\n:_debuffResist: __Debuff Resist__ - upTolerance, downTolerance\n:_debuffImmunity: __Debuff Immunity__ - avoidState\n:_debuffSuccessUp: __Debuff Success__ - upGrantstate, downGrantstate\n:_removalResistUp: __Buff Clear Resist__ - upToleranceSubstate, downToleranceSubstate\n:_spooky: __Instant Kill Resist__ - upResistInstantdeath, upNonresistInstantdeath\n:_deathImmunity: __Instant Kill Immunity__ - avoidInstantdeath\n:_deathRateUp: __Instant Kill Success__ - upGrantInstantdeath, downGrantInstantdeath\n:_trait: __Class Interaction__ - overwriteClassRelation\n:shikidab: *AFAIK any Buff?* - addState, subState\n**Triggers:**\n:_deadLater: __Trigger On Death__ - deadFunction\n:_triggerOnAtk: __Trigger On Card Use__ - commandattackFunction\n:landingBB: __Trigger On Enter Battle__ - entryFunction\n**Rewards:**\n:_journey: __Master XP__ - expUp; __Clothes XP__ - userEquipExpUp\n:_qpUp: __QP +X__ - qpUp, __QP +%__ - qpDropUp\n:_bond: __Bond__ - servantFriendshipUp\n:_friendshipPoint: __FP from Taking__ - friendPointUp, __FP +X__ - friendPointUpDuplicate";
+    let page3 = "**Events:**\n__CE XP & Valentine's__ - none\n__Event Damage__ - upDamage, downDamage\n__Chance to Clone Enemy__ - enemyEncountCopyRateUp; __Chance to Make Enemy Appear__ - enemyEncountRateUp\n__Event Currencies__ - eventDropUp; __Chance of Dropping Event Currency__ - eventDropRateUp\n__Event Points__ - eventPointUp; __Point-based Damage (Oniland)__ - upDamageEventPoint\n__Prisma Event__ - upCommandatk, downCommandatk\n__Coin Drop (Valentine's & Fate/Zero)__ - classDropUp";
+    if (page == 1) {
         msg.channel.send({
             embed: {
-                title: "Valid Arguments, But Unused In-Game:",
-                description: unused1
+                title: "Argument List:",
+                description: page1
+            }
+        });
+    }
+    else if (page == 2) {
+        msg.channel.send({
+            embed: {
+                title: "Argument List:",
+                description: page2
+            }
+        });
+    }
+    else if (page == 3) {
+        msg.channel.send({
+            embed: {
+                title: "Argument List:",
+                description: page3
+            }
+        });
+    }
+    else {
+        msg.channel.send({
+            embed: {
+                title: "Argument List:",
+                description: page1
             }
         });
         msg.channel.send({
             embed: {
-                description: unused2
+                description: page2
+            }
+        });
+        msg.channel.send({
+            embed: {
+                description: page3
             }
         });
     }
@@ -381,7 +397,7 @@ function showHelp(msg) {
     msg.channel.send({
         embed: {
             title: "Using Kaleidoscope",
-            description: "`=ce [args]` //Get a list of all craft essences with that buff or function\n**example:** `=ce upDropnp gainNp` lists all CEs with NP Gain and Starting NP.\n\n`=list [a/all/u/unused/v/verbose]` //Get a formatted list of the technical names of all buffs & functions.\nBy default, `=list` omits any functions that don't appear on any CEs; use one of the bracketed arguments to see those as well.\n`=listRaw [args]` //Get a list of the technical names of all buffs & functions. It's long without any arguments, I recommend filtering:\n**example:** `=list np` lists arguments that contain 'np'."
+            description: "`=ce [args]` //Get a list of all craft essences with that buff or function\n**example:** `=ce upDropnp gainNp` lists all CEs with NP Gain and Starting NP.\n\n`=list [1/2/3]` //Get a formatted list of the technical names of buffs & functions used by the game. You can specify a page if you don't want all of them.\n\n`=listRaw [args]` //Get a list of the technical names of all buffs & functions. You can also search (recommended, the full list is long):\n**example:** `=list np` lists arguments that contain 'np'."
         }
     });
 }
