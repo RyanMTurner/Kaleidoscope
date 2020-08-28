@@ -270,7 +270,7 @@ function checkCEs(chatMsg) {
         });
     }
     else {
-        msg.channel.send({
+        chatMsg.channel.send({
             content: "Found no " + msgTitle
         });
     }
