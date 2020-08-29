@@ -47,7 +47,20 @@ bot.on('message', msg => {
                     for (let a = 0; a < args.length; a++) {
                         if (!uniqueArgs.includes(args[a])) {
                             //console.log("Unique arg " + args[a]);
-                            uniqueArgs.push(args[a]);
+
+                            //Input checking
+                            let theyMeant = getContentsToLower(buffsEnum, args[a]);
+                            if (theyMeant == "") {
+                                theyMeant = getContentsToLower(functionsNotBuffs, args[a]);
+                            }
+                            if (theyMeant != "") {
+                                if (!uniqueArgs.includes(theyMeant)) {
+                                    uniqueArgs.push(theyMeant);
+                                }
+                            }
+                            else {
+                                uniqueArgs.push(args[a]);
+                            }
                         }
                     }
                     filterEnums(msg, uniqueArgs);
@@ -158,19 +171,9 @@ function getCEsWithEffect(msg, effect) {
             }
         }
         else if (request.status == 422) {
-            let theyMeant = getContentsToLower(buffsEnum, effect);
-            if (theyMeant == "") {
-                theyMeant = getContentsToLower(functionsNotBuffs, effect);
-            }
-            if (theyMeant != "") {
-                loadsDone -= 1;
-                getCEsWithEffect(msg, theyMeant);
-            }
-            else {
-                msg.channel.send({
-                    content: "Unknown arg: " + effect
-                });
-            }
+            msg.channel.send({
+                content: "Unknown arg: " + effect
+            });
         }
         else {
             console.log(`error ${request.status} ${request.statusText}`);
