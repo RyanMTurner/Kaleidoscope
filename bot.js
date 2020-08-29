@@ -44,7 +44,7 @@ bot.on('message', msg => {
             case 'listraw':
                 if (args.length >= 1) {
                     let uniqueArgs = [];
-                    for (a = 0; a < args.length; a++) {
+                    for (let a = 0; a < args.length; a++) {
                         if (!uniqueArgs.includes(args[a])) {
                             //console.log("Unique arg " + args[a]);
                             uniqueArgs.push(args[a]);
@@ -66,7 +66,7 @@ bot.on('message', msg => {
                 else if (args[0].toLowerCase() == "listraw") {
                     if (args.length >= 2) {
                         let uniqueArgs = [];
-                        for (a = 1; a < args.length; a++) {
+                        for (let a = 1; a < args.length; a++) {
                             if (!uniqueArgs.includes(args[a])) {
                                 //console.log("Unique arg " + args[a]);
                                 uniqueArgs.push(args[a]);
@@ -90,7 +90,7 @@ bot.on('message', msg => {
                     skillsToLookUp = [];
                     skillToCEs = {};
                     loadsDone = 0;
-                    for (i = 0; i < args.length; i++) {
+                    for (let i = 0; i < args.length; i++) {
                         if (!skillsToLookUp.includes(args[i])) {
                             //console.log("Unique arg " + args[i]);
                             skillsToLookUp.push(args[i]);
@@ -98,7 +98,7 @@ bot.on('message', msg => {
                         }
                     }
                     effectCount = skillsToLookUp.length;
-                    for (i = 0; i < effectCount; i++) {
+                    for (let i = 0; i < effectCount; i++) {
                         getCEsWithEffect(msg, skillsToLookUp[i]);
                     }
                 }
@@ -129,7 +129,7 @@ function getCEsWithEffect(msg, effect) {
         if (request.status == 200) {
             let obj = JSON.parse(request.responseText);
             if (buff) {
-                for (buffNo = 0; buffNo < obj.length; buffNo++) {
+                for (let buffNo = 0; buffNo < obj.length; buffNo++) {
                     if (obj[buffNo].hasOwnProperty("reverse")) {
                         if (obj[buffNo].reverse != null && obj[buffNo].reverse.hasOwnProperty("basic")) {
                             if (obj[buffNo].reverse.basic != null && obj[buffNo].reverse.basic.hasOwnProperty("function")) {
@@ -158,9 +158,20 @@ function getCEsWithEffect(msg, effect) {
             }
         }
         else if (request.status == 422) {
-            msg.channel.send({
-                content: "Unknown arg: " + effect
-            });
+            let theyMeant = getContentsToLower(buffsEnum, effect);
+            if (theyMeant == "") {
+                theyMeant = getContentsToLower(functionsNotBuffs, effect);
+            }
+            if (theyMeant == "") {
+                msg.channel.send({
+                    content: "Unknown arg: " + effect + "\nI'm very picky about capitals, did you mean *" + theyMeant + "*?"
+                });
+            }
+            else {
+                msg.channel.send({
+                    content: "Unknown arg: " + effect
+                });
+            }
         }
         else {
             console.log(`error ${request.status} ${request.statusText}`);
@@ -175,17 +186,17 @@ function getCEsWithEffect(msg, effect) {
 }
 
 function addCEsFromFunctionList(funcs, effect) {
-    for (funcNo = 0; funcNo < funcs.length; funcNo++) {
+    for (let funcNo = 0; funcNo < funcs.length; funcNo++) {
         if (funcs[funcNo].hasOwnProperty("reverse")) {
             if (funcs[funcNo].reverse != null && funcs[funcNo].reverse.hasOwnProperty("basic")) {
                 if (funcs[funcNo].reverse.basic != null && funcs[funcNo].reverse.basic.hasOwnProperty("skill")) {
                     if (funcs[funcNo].reverse.basic.skill != null) {
-                        for (skill = 0; skill < funcs[funcNo].reverse.basic.skill.length; skill++) {
+                        for (let skill = 0; skill < funcs[funcNo].reverse.basic.skill.length; skill++) {
                             if (funcs[funcNo].reverse.basic.skill[skill].hasOwnProperty("reverse")) {
                                 if (funcs[funcNo].reverse.basic.skill[skill].reverse != null && funcs[funcNo].reverse.basic.skill[skill].reverse.hasOwnProperty("basic")) {
                                     if (funcs[funcNo].reverse.basic.skill[skill].reverse.basic != null && funcs[funcNo].reverse.basic.skill[skill].reverse.basic.hasOwnProperty("servant")) {
                                         if (funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant != null) {
-                                            for (servant = 0; servant < funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant.length; servant++) {
+                                            for (let servant = 0; servant < funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant.length; servant++) {
                                                 if (funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant].hasOwnProperty("type")) {
                                                     if (funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant].type == "servantEquip") {
                                                         if (!listContainsCEId(skillToCEs[effect], funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant])) {
@@ -236,7 +247,7 @@ function addCEsFromFunctionList(funcs, effect) {
 
 function checkCEs(chatMsg) {
     let msgTitle = "CEs that have ALL of: ";
-    for (i = 0; i < effectCount; i++) {
+    for (let i = 0; i < effectCount; i++) {
         msgTitle += skillsToLookUp[i];
         if (i < effectCount - 1) {
             msgTitle += ", ";
@@ -247,13 +258,13 @@ function checkCEs(chatMsg) {
     }
     let msg = "";
     let ids = [];
-    for (j = 0; j < skillToCEs[skillsToLookUp[0]].length; j++) {
+    for (let j = 0; j < skillToCEs[skillsToLookUp[0]].length; j++) {
         if (skillToCEs[skillsToLookUp[0]][j].collectionNo == 0) {
             continue;
         }
         //console.log("Checking CE Id: " + skillToCEs[skillsToLookUp[0]][j].collectionNo + " (" + (j + 1) + " of " + skillToCEs[skillsToLookUp[0]].length + ")");
         let addCE = true;
-        for (list = 1; list < effectCount; list++) {
+        for (let list = 1; list < effectCount; list++) {
             if (!listContainsCEId(skillToCEs[skillsToLookUp[list]], skillToCEs[skillsToLookUp[0]][j])) {
                 addCE = false;
                 break;
@@ -270,7 +281,7 @@ function checkCEs(chatMsg) {
     ids.sort((a, b) => a - b);
     if (ids.length > 0) {
         let msgLong = (' ' + msg).slice(1);
-        for (k = 0; k < ids.length; k++) {
+        for (let k = 0; k < ids.length; k++) {
             msg += ids[k] + ", ";
             msgLong += "[" + ids[k] + "](https://apps.atlasacademy.io/db/#/JP/craft-essence/" + ids[k] + "), ";
         }
@@ -300,7 +311,7 @@ function checkIdsEqual(ce1, ce2) {
 }
 
 function listContainsCEId(list, ce) {
-    for (i = 0; i < list.length; i++) {
+    for (let i = 0; i < list.length; i++) {
         if (checkIdsEqual(list[i], ce)) {
             return true;
         }
@@ -311,7 +322,7 @@ function listContainsCEId(list, ce) {
 function listEnumsDirty(msg) {
     let strings = [""];
     let currentString = 0;
-    for (b = 0; b < buffsEnum.length; b++) {
+    for (let b = 0; b < buffsEnum.length; b++) {
         if (strings[currentString].length + buffsEnum[b].length + 2 < 2048) {
             strings[currentString] += buffsEnum[b] + ", ";
         }
@@ -320,7 +331,7 @@ function listEnumsDirty(msg) {
             strings[currentString] = buffsEnum[b] + ", ";
         }
     }
-    for (f = 0; f < functionsNotBuffs.length; f++) {
+    for (let f = 0; f < functionsNotBuffs.length; f++) {
         if (strings[currentString].length + functionsNotBuffs[f].length + 2 < 2048) {
             strings[currentString] += functionsNotBuffs[f] + ", ";
         }
@@ -336,7 +347,7 @@ function listEnumsDirty(msg) {
             description: strings[0]
         }
     });
-    for (m = 1; m < strings.length; m++) {
+    for (let m = 1; m < strings.length; m++) {
         msg.channel.send({
             embed: {
                 description: strings[m]
@@ -404,7 +415,7 @@ function showHelp(msg) {
 
 function filterEnums(msg, args) {
     let tittle = "CE Options Containing: ";
-    for (t = 0; t < args.length; t++) {
+    for (let t = 0; t < args.length; t++) {
         if (t > 0) {
             tittle += " OR ";
         }
@@ -413,7 +424,7 @@ function filterEnums(msg, args) {
 
     let strings = [""];
     let currentString = 0;
-    for (b = 0; b < buffsEnum.length; b++) {
+    for (let b = 0; b < buffsEnum.length; b++) {
         if (containsToLower(args, buffsEnum[b])) {
             if (strings[currentString].length + buffsEnum[b].length + 2 < 2048) {
                 strings[currentString] += buffsEnum[b] + ", ";
@@ -424,7 +435,7 @@ function filterEnums(msg, args) {
             }
         }
     }
-    for (f = 0; f < functionsNotBuffs.length; f++) {
+    for (let f = 0; f < functionsNotBuffs.length; f++) {
         if (containsToLower(args, functionsNotBuffs[f])) {
             if (strings[currentString].length + functionsNotBuffs[f].length + 2 < 2048) {
                 strings[currentString] += functionsNotBuffs[f] + ", ";
@@ -442,7 +453,7 @@ function filterEnums(msg, args) {
             description: strings[0]
         }
     });
-    for (m = 1; m < strings.length; m++) {
+    for (let m = 1; m < strings.length; m++) {
         msg.channel.send({
             embed: {
                 description: strings[m]
@@ -452,11 +463,21 @@ function filterEnums(msg, args) {
 }
 
 function containsToLower(list, string) {
-    for (l = 0; l < list.length; l++) {
+    for (let l = 0; l < list.length; l++) {
         //console.log("Testing if " + list[l] + " contains " + string);
         if (string.toLowerCase().includes(list[l].toLowerCase())) {
             return true;
         }
     }
     return false;
+}
+
+function getContentsToLower(list, string) {
+    for (let l = 0; l < list.length; l++) {
+        //console.log("Testing if " + list[l] + " contains " + string);
+        if (string.toLowerCase().includes(list[l].toLowerCase())) {
+            return list[l];
+        }
+    }
+    return "";
 }
