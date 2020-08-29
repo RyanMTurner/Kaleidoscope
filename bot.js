@@ -47,20 +47,7 @@ bot.on('message', msg => {
                     for (let a = 0; a < args.length; a++) {
                         if (!uniqueArgs.includes(args[a])) {
                             //console.log("Unique arg " + args[a]);
-
-                            //Input checking
-                            let theyMeant = getContentsToLower(buffsEnum, args[a]);
-                            if (theyMeant == "") {
-                                theyMeant = getContentsToLower(functionsNotBuffs, args[a]);
-                            }
-                            if (theyMeant != "") {
-                                if (!uniqueArgs.includes(theyMeant)) {
-                                    uniqueArgs.push(theyMeant);
-                                }
-                            }
-                            else {
-                                uniqueArgs.push(args[a]);
-                            }
+                            uniqueArgs.push(args[a]);
                         }
                     }
                     filterEnums(msg, uniqueArgs);
@@ -105,9 +92,23 @@ bot.on('message', msg => {
                     loadsDone = 0;
                     for (let i = 0; i < args.length; i++) {
                         if (!skillsToLookUp.includes(args[i])) {
-                            //console.log("Unique arg " + args[i]);
-                            skillsToLookUp.push(args[i]);
-                            skillToCEs[args[i]] = [];
+                            //console.log("Unique arg " + args[a]);
+
+                            //Input checking
+                            let theyMeant = getContentsToLower(buffsEnum, args[i]);
+                            if (theyMeant == "") {
+                                theyMeant = getContentsToLower(functionsNotBuffs, args[i]);
+                            }
+                            if (theyMeant != "") {
+                                if (!skillsToLookUp.includes(theyMeant)) {
+                                    skillsToLookUp.push(theyMeant);
+                                    skillToCEs[theyMeant] = [];
+                                }
+                            }
+                            else {
+                                skillsToLookUp.push(args[i]);
+                                skillToCEs[args[i]] = [];
+                            }
                         }
                     }
                     effectCount = skillsToLookUp.length;
