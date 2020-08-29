@@ -474,8 +474,8 @@ function containsToLower(list, string) {
 
 function getContentsToLower(list, string) {
     for (let l = 0; l < list.length; l++) {
-        //console.log("Testing if " + list[l] + " contains " + string);
-        if (string.toLowerCase().includes(list[l].toLowerCase())) {
+        console.log("Testing if " + list[l] + " == " + string);
+        if (string.toLowerCase() == list[l].toLowerCase()) {
             return list[l];
         }
     }
