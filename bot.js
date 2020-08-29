@@ -162,7 +162,7 @@ function getCEsWithEffect(msg, effect) {
             if (theyMeant == "") {
                 theyMeant = getContentsToLower(functionsNotBuffs, effect);
             }
-            if (theyMeant == "") {
+            if (theyMeant != "") {
                 msg.channel.send({
                     content: "Unknown arg: " + effect + "\nI'm very picky about capitals, did you mean *" + theyMeant + "*?"
                 });
@@ -474,7 +474,7 @@ function containsToLower(list, string) {
 
 function getContentsToLower(list, string) {
     for (let l = 0; l < list.length; l++) {
-        console.log("Testing if " + list[l] + " == " + string);
+        //console.log("Testing if " + list[l] + " == " + string);
         if (string.toLowerCase() == list[l].toLowerCase()) {
             return list[l];
         }
