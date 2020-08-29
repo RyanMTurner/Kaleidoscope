@@ -259,7 +259,6 @@ function checkCEs(chatMsg) {
             msgTitle += "\n";
         }
     }
-    let msg = "";
     let ids = [];
     for (let j = 0; j < skillToCEs[skillsToLookUp[0]].length; j++) {
         if (skillToCEs[skillsToLookUp[0]][j].collectionNo == 0) {
@@ -282,22 +281,34 @@ function checkCEs(chatMsg) {
         }
     }
     ids.sort((a, b) => a - b);
+    let strings = [""];
+    let currentString = 0;
     if (ids.length > 0) {
-        let msgLong = (' ' + msg).slice(1);
         for (let k = 0; k < ids.length; k++) {
-            msg += ids[k] + ", ";
-            msgLong += "[" + ids[k] + "](https://apps.atlasacademy.io/db/#/JP/craft-essence/" + ids[k] + "), ";
+            let addition = "[" + ids[k] + "](https://apps.atlasacademy.io/db/#/JP/craft-essence/" + ids[k] + "), ";
+            if (strings[currentString].length + addition.length < 2048) {
+                strings[currentString] += addition;
+            }
+            else {
+                currentString++;
+                strings[currentString] = addition;
+            }
         }
-        if (msgLong.length <= 2000) {
-            msg = msgLong;
-        }
-        msg = msg.substring(0, msg.length - 2);
+        strings[currentString] = strings[currentString].substring(0, strings[currentString].length - 2);
+
         chatMsg.channel.send({
             embed: {
                 title: msgTitle,
-                description: msg
+                description: strings[0]
             }
         });
+        for (let m = 1; m < strings.length; m++) {
+            chatMsg.channel.send({
+                embed: {
+                    description: strings[m]
+                }
+            });
+        }
     }
     else {
         chatMsg.channel.send({
