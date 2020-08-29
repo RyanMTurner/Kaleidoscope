@@ -163,9 +163,8 @@ function getCEsWithEffect(msg, effect) {
                 theyMeant = getContentsToLower(functionsNotBuffs, effect);
             }
             if (theyMeant != "") {
-                msg.channel.send({
-                    content: "Unknown arg: " + effect + "\nI'm very picky about capitals, did you mean `" + theyMeant + "`?"
-                });
+                loadsDone -= 1;
+                getCEsWithEffect(msg, theyMeant);
             }
             else {
                 msg.channel.send({
