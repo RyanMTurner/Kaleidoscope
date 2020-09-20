@@ -215,8 +215,8 @@ function addCEsFromFunctionList(funcs, effect) {
                 for (let buffNo = 0; buffNo < funcs[funcNo].buffs.length; buffNo++) {
                     if (funcs[funcNo].buffs[buffNo].hasOwnProperty("type") && funcs[funcNo].buffs[buffNo].type.includes("Commandall")) {
                         if (funcs[funcNo].buffs[buffNo].hasOwnProperty("ckSelfIndv")) {
-                            for (let indv = 0; indv < funcs[funcNo].buffs.ckSelfIndv.length; indv++) {
-                                if (funcs[funcNo].buffs.ckSelfIndv[indv].hasOwnProperty("name") && funcs[funcNo].buffs.ckSelfIndv[indv].name.includes(getCardName(effect))) {
+                            for (let indv = 0; indv < funcs[funcNo].buffs[buffNo].ckSelfIndv.length; indv++) {
+                                if (funcs[funcNo].buffs[buffNo].ckSelfIndv[indv].hasOwnProperty("name") && funcs[funcNo].buffs[buffNo].ckSelfIndv[indv].name.includes(getCardName(effect))) {
                                     skip = false;
                                 }
                             }
