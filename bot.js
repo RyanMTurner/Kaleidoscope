@@ -17,6 +17,14 @@ bot.on('ready', function (evt) {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(bot.username + ' - (' + bot.id + ')');
+
+    bot.user.setPresence({
+        status: 'online',
+        activity: {
+            name: 'type =help to get started',
+            type: 'PLAYING'
+        }
+    });
 });
 
 bot.on('message', msg => {
