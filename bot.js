@@ -136,7 +136,17 @@ var skillsToLookUp = [];
 var skillToCEs = {};
 var loadsDone = 0;
 
+var commandUps = ["upArts", "upBuster", "upQuick"];
+var commandDowns = ["downArts", "downBuster", "downQuick"];
+
 function getCEsWithEffect(msg, effect) {
+    let tempEffect = effect;
+    if (containsToLower(commandUps, effect)) {
+        effect = "upCommandall";
+    }
+    if (containsToLower(commandDowns, effect)) {
+        effect = "downCommandall";
+    }
     let request = new XMLHttpRequest();
     let buff = !functionsNotBuffs.includes(effect);
     if (!buff) {
@@ -156,7 +166,7 @@ function getCEsWithEffect(msg, effect) {
                         if (obj[buffNo].reverse != null && obj[buffNo].reverse.hasOwnProperty("basic")) {
                             if (obj[buffNo].reverse.basic != null && obj[buffNo].reverse.basic.hasOwnProperty("function")) {
                                 if (obj[buffNo].reverse.basic.function != null) {
-                                    addCEsFromFunctionList(obj[buffNo].reverse.basic.function, effect);
+                                    addCEsFromFunctionList(obj[buffNo].reverse.basic.function, tempEffect);
                                 }
                                 else {
                                     console.log("Function list is null");
@@ -176,7 +186,7 @@ function getCEsWithEffect(msg, effect) {
                 }
             }
             else {
-                addCEsFromFunctionList(obj, effect);
+                addCEsFromFunctionList(obj, tempEffect);
             }
         }
         else if (request.status == 422) {
@@ -198,6 +208,29 @@ function getCEsWithEffect(msg, effect) {
 
 function addCEsFromFunctionList(funcs, effect) {
     for (let funcNo = 0; funcNo < funcs.length; funcNo++) {
+        let skip = false;
+        if (containsToLower(commandUps, effect) || containsToLower(commandDowns, effect)) {
+            skip = true;
+            if (funcs[funcNo].hasOwnProperty("buffs")) {
+                for (let buffNo = 0; buffNo < funcs[funcNo].buffs.length; buffNo++) {
+                    if (funcs[funcNo].buffs[buffNo].hasOwnProperty("type") && funcs[funcNo].buffs[buffNo].type.includes("Commandall")) {
+                        if (funcs[funcNo].buffs[buffNo].hasOwnProperty("ckSelfIndv")) {
+                            for (let indv = 0; indv < funcs[funcNo].buffs.ckSelfIndv.length; indv++) {
+                                if (funcs[funcNo].buffs.ckSelfIndv[indv].hasOwnProperty("name") && funcs[funcNo].buffs.ckSelfIndv[indv].name.includes(getCardName(effect))) {
+                                    skip = false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                console.log("Does not have property: buffs");
+            }
+        }
+        if (skip) {
+            continue;
+        }
         if (funcs[funcNo].hasOwnProperty("reverse")) {
             if (funcs[funcNo].reverse != null && funcs[funcNo].reverse.hasOwnProperty("basic")) {
                 if (funcs[funcNo].reverse.basic != null && funcs[funcNo].reverse.basic.hasOwnProperty("skill")) {
@@ -502,4 +535,16 @@ function getContentsToLower(list, string) {
         }
     }
     return "";
+}
+
+function getCardName(string) {
+    if (string.toLowerCase().includes("arts")) {
+        return "Arts";
+    }
+    if (string.toLowerCase().includes("buster")) {
+        return "Buster";
+    }
+    if (string.toLowerCase().includes("quick")) {
+        return "Quick";
+    }
 }
