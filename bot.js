@@ -105,7 +105,7 @@ bot.on('message', msg => {
 
                             //Rarity
                             if (isRarityArgument(args[i])) {
-                                rarity = parseInt(args[i][2]);
+                                rarity = parseInt(args[i][args[i].length - 1]);
                             }
                             else {
                                 //Input checking
