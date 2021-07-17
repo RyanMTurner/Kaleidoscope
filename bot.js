@@ -98,24 +98,31 @@ bot.on('message', msg => {
                     skillsToLookUp = [];
                     skillToCEs = {};
                     loadsDone = 0;
+                    rarity = -1;
                     for (let i = 0; i < args.length; i++) {
                         if (!skillsToLookUp.includes(args[i])) {
                             //console.log("Unique arg " + args[a]);
 
-                            //Input checking
-                            let theyMeant = getContentsToLower(buffsEnum, args[i]);
-                            if (theyMeant == "") {
-                                theyMeant = getContentsToLower(functionsNotBuffs, args[i]);
-                            }
-                            if (theyMeant != "") {
-                                if (!skillsToLookUp.includes(theyMeant)) {
-                                    skillsToLookUp.push(theyMeant);
-                                    skillToCEs[theyMeant] = [];
-                                }
+                            //Rarity
+                            if (isRarityArgument(args[i])) {
+                                rarity = parseInt(args[i][2]);
                             }
                             else {
-                                skillsToLookUp.push(args[i]);
-                                skillToCEs[args[i]] = [];
+                                //Input checking
+                                let theyMeant = getContentsToLower(buffsEnum, args[i]);
+                                if (theyMeant == "") {
+                                    theyMeant = getContentsToLower(functionsNotBuffs, args[i]);
+                                }
+                                if (theyMeant != "") {
+                                    if (!skillsToLookUp.includes(theyMeant)) {
+                                        skillsToLookUp.push(theyMeant);
+                                        skillToCEs[theyMeant] = [];
+                                    }
+                                }
+                                else {
+                                    skillsToLookUp.push(args[i]);
+                                    skillToCEs[args[i]] = [];
+                                }
                             }
                         }
                     }
@@ -135,6 +142,7 @@ var effectCount = 0;
 var skillsToLookUp = [];
 var skillToCEs = {};
 var loadsDone = 0;
+var rarity = -1;
 
 var commandUps = ["upArts", "upBuster", "upQuick"];
 var commandDowns = ["downArts", "downBuster", "downQuick"];
@@ -243,9 +251,19 @@ function addCEsFromFunctionList(funcs, effect) {
                                             for (let servant = 0; servant < funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant.length; servant++) {
                                                 if (funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant].hasOwnProperty("type")) {
                                                     if (funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant].type == "servantEquip") {
-                                                        if (!listContainsCEId(skillToCEs[effect], funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant])) {
-                                                            //console.log("Adding CE Id: " + funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant].collectionNo + " to effect: " + effect);
-                                                            skillToCEs[effect].push(funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant]);
+                                                        if (rarity == -1 || funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant].hasOwnProperty("rarity")) {
+                                                            if (rarity == -1 || funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant].rarity == rarity) {
+                                                                if (!listContainsCEId(skillToCEs[effect], funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant])) {
+                                                                    //console.log("Adding CE Id: " + funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant].collectionNo + " to effect: " + effect);
+                                                                    skillToCEs[effect].push(funcs[funcNo].reverse.basic.skill[skill].reverse.basic.servant[servant]);
+                                                                }
+                                                            }
+                                                            else {
+                                                                //console.log("Wrong rarity");
+                                                            }
+                                                        }
+                                                        else {
+                                                            console.log("Does not have property: rarity");
                                                         }
                                                     }
                                                     else {
@@ -356,6 +374,15 @@ function checkCEs(chatMsg) {
             content: "Found no " + msgTitle
         });
     }
+}
+
+function isRarityArgument(arg) {
+    for (let i = 1; i <= 5; i++) {
+        if (arg == "r" + i.toString() || arg == "rarity" + i.toString()) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function checkIdsEqual(ce1, ce2) {
