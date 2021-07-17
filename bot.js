@@ -98,14 +98,14 @@ bot.on('message', msg => {
                     skillsToLookUp = [];
                     skillToCEs = {};
                     loadsDone = 0;
-                    rarity = -1;
+                    rarity = "-1";
                     for (let i = 0; i < args.length; i++) {
                         if (!skillsToLookUp.includes(args[i])) {
                             //console.log("Unique arg " + args[a]);
 
                             //Rarity
                             if (isRarityArgument(args[i])) {
-                                rarity = parseInt(args[i][2]);
+                                rarity = args[i][2];
                             }
                             else {
                                 //Input checking
@@ -142,7 +142,7 @@ var effectCount = 0;
 var skillsToLookUp = [];
 var skillToCEs = {};
 var loadsDone = 0;
-var rarity = -1;
+var rarity = "-1";
 
 var commandUps = ["upArts", "upBuster", "upQuick"];
 var commandDowns = ["downArts", "downBuster", "downQuick"];
